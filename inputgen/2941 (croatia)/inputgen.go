@@ -1,27 +1,20 @@
 package main
 
 import (
-	"fmt"
 	"math/rand"
 	"strings"
 )
 
+var list = []string{"c=", "c-", "dz=", "d-", "lj", "nj", "s=", "z=", "c", "d", "z", "l", "j", "n", "s", "a", "g", "dz"}
+
 func CreateInput() string {
 	ans := new(strings.Builder)
 
-	nmax := 10
-	pathmax := 10
-	costmax := 10
-
-	N := rand.Intn(nmax-1) + 2
-	fmt.Fprintln(ans, N)
-
-	for i := 0; i < N-1; i++ {
-		fmt.Fprintf(ans, "%d ", rand.Intn(pathmax)+1)
-	}
-	fmt.Fprintln(ans)
-	for i := 0; i < N; i++ {
-		fmt.Fprintf(ans, "%d ", rand.Intn(costmax)+1)
+	lenmax := 20
+	length := rand.Intn(lenmax) + 1
+	for ans.Len() < length {
+		b := list[rand.Intn(len(list))]
+		ans.WriteString(b)
 	}
 
 	return TrimSpaces(ans.String())
