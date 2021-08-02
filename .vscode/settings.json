@@ -1,0 +1,10 @@
+{
+    "go.lintTool": "golangci-lint",
+    "go.lintFlags": [
+        "--disable-all",
+        "--enable=golint",
+        "--exclude=exported (const|type|method|function) [\\w.]+ should have comment (\\(or a comment on this block\\) )?or be unexported",
+        "--exclude=don't use ALL_CAPS in Go names; use CamelCase",
+        "--exclude=(func|const|struct field|) \\w+ should be \\w+"
+    ],
+}
