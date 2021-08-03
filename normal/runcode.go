@@ -47,7 +47,7 @@ func Run(p *exec.Cmd, in string) string {
 		timer.Stop()
 		if err != nil {
 			close(done)
-			return "Process returned an error"
+			return "Process returned an error, " + err.Error() + "\n" + TrimSpaces(buf.String())
 		}
 		return TrimSpaces(buf.String())
 	}

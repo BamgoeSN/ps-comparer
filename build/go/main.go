@@ -4,20 +4,66 @@ import (
 	"bufio"
 	"fmt"
 	"os"
+	"strconv"
 )
 
-var r = bufio.NewReader(os.Stdin)
+func push(s *[]int, x int) {
+	*s = append(*s, x)
+}
+
+func get(s *[]int) int {
+	if len(*s) == 0 {
+		return -1
+	}
+	x := (*s)[len(*s)-1]
+	*s = (*s)[:len(*s)-1]
+	return x
+}
+
+var scanner = bufio.NewScanner(os.Stdin)
 
 func main() {
-	var input [10]int64
-	for i := range input {
-		fmt.Fscan(r, &(input[i]))
+	var n int
+	scanner.Scan()
+	n, _ = strconv.Atoi(scanner.Text())
+	seq := make([]int, n)
+	for i := range seq {
+		scanner.Scan()
+		seq[i], _ = strconv.Atoi(scanner.Text())
+	}
+	s := new([]int)
+	var num = 1
+	oper := make([]byte, 0)
+
+	for num <= n {
+		if len(*s) == 0 || (*s)[len(*s)-1] != seq[0] {
+			push(s, num)
+			num++
+			oper = append(oper, '+')
+		} else {
+			get(s)
+			seq = seq[1:]
+			oper = append(oper, '-')
+		}
 	}
 
-	board := make(map[int64]bool)
-	for _, v := range input {
-		board[v%42] = true
+	solve := true
+	for _, v := range seq {
+		if v != get(s) {
+			solve = false
+			break
+		}
+		oper = append(oper, '-')
 	}
 
-	fmt.Println(len(board))
+	output := make([]byte, 0)
+	if solve {
+		for _, v := range oper {
+			output = append(output, v)
+			output = append(output, '\n')
+		}
+	} else {
+		output = append(output, []byte("NO\n")...)
+	}
+	fmt.Print(string(output))
 }

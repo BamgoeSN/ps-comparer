@@ -6,14 +6,23 @@ import (
 	"strings"
 )
 
-var n int = 1
+var (
+	nmax, nmin int = 90000, 90000
+)
 
 func CreateInput() string {
 	ans := new(strings.Builder)
 
-	nmax := 42
-	for i := 0; i < 10; i++ {
-		fmt.Fprintln(ans, rand.Intn(nmax)+1)
+	n := rand.Intn(nmax-nmin+1) + nmin
+	fmt.Fprintln(ans, n)
+
+	arr := make([]int, n)
+	for i := range arr {
+		arr[i] = i + 1
+	}
+	// rand.Shuffle(len(arr), func(i, j int) { arr[i], arr[j] = arr[j], arr[i] })
+	for _, v := range arr {
+		fmt.Fprintln(ans, v)
 	}
 
 	return TrimSpaces(ans.String())
