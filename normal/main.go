@@ -18,7 +18,7 @@ var fp, _ = os.Create("output.txt")
 var outputWriter = bufio.NewWriter(fp)
 
 var (
-	timeOut   int = 2100 // In ms
+	timeOut   int = 20000 // In ms
 	testcases int = 100
 )
 

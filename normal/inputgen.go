@@ -6,22 +6,14 @@ import (
 	"strings"
 )
 
+var n int = 1
+
 func CreateInput() string {
 	ans := new(strings.Builder)
 
-	nmax := 10
-	pathmax := 10
-	costmax := 10
-
-	N := rand.Intn(nmax-1) + 2
-	fmt.Fprintln(ans, N)
-
-	for i := 0; i < N-1; i++ {
-		fmt.Fprintf(ans, "%d ", rand.Intn(pathmax)+1)
-	}
-	fmt.Fprintln(ans)
-	for i := 0; i < N; i++ {
-		fmt.Fprintf(ans, "%d ", rand.Intn(costmax)+1)
+	nmax := 42
+	for i := 0; i < 10; i++ {
+		fmt.Fprintln(ans, rand.Intn(nmax)+1)
 	}
 
 	return TrimSpaces(ans.String())

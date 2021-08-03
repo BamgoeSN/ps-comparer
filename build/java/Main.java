@@ -1,61 +1,72 @@
-import java.util.Scanner;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 
 public class Main {
 
-    public static void main(String[] args) {
-        Scanner sc = new Scanner(System.in);
-        String s = sc.next();
-        int crocnt = 0;
-        int alphacnt = 0;
+    private static int[] arr;
+    private static BufferedReader br;
 
-        for (int i = 0; i < s.length(); i++) {
-            if (i < s.length() - 1) {
-                if (s.charAt(i) == 'c' && s.charAt(i + 1) == '=') {
-                    crocnt++;
-                } else if (s.charAt(i) == 'c' && s.charAt(i + 1) == '-') {
-                    crocnt++;
-                } else if ((s.charAt(i) == 'd' && s.charAt(i + 1) == 'z' && s.charAt(i + 2) == '=')) {
-                    crocnt++;
-                    if (s.charAt(i + 1) == 'z' && s.charAt(i + 2) == '=') {
-                        crocnt--;
-                    }
-                } else if (s.charAt(i) == 'd' && s.charAt(i + 1) == '-') {
-                    crocnt++;
-                } else if (s.charAt(i) == 'l' && s.charAt(i + 1) == 'j') {
-                    crocnt++;
-                } else if (s.charAt(i) == 'n' && s.charAt(i + 1) == 'j') {
-                    crocnt++;
-                } else if (s.charAt(i) == 's' && s.charAt(i + 1) == '=') {
-                    crocnt++;
-                } else if (s.charAt(i) == 'z' && s.charAt(i + 1) == '=') {
-                    crocnt++;
-                } else if (i > 0) {
-                    if (s.charAt(i) == 'j') {
-                        if (s.charAt(i - 1) != 'n' && s.charAt(i - 1) != 'l') {
-                            alphacnt++;
-                        }
-                    } else if (s.charAt(i) >= 'a' && s.charAt(i) <= 'z' && s.charAt(i) != 'j') {
-                        alphacnt++;
-                    }
-                } else if (i == 0) {
-                    if (s.charAt(i) >= 'a' && s.charAt(i) <= 'z') {
-                        alphacnt++;
-                    }
-                }
+    public static void main(String[] args) throws IOException {
+        makeArr();
+        initializeArr();
+        quickSort(0, arr.length - 1);
+        printArr();
+    }
 
-            } else {
-                if (s.charAt(i) >= 'a' && s.charAt(i) <= 'z' && s.charAt(i) != 'j') {
-                    alphacnt++;
-                } else if (s.charAt(i) == 'j') {
-                    if (s.charAt(i - 1) != 'n' && s.charAt(i - 1) != 'l') {
-                        alphacnt++;
-                    }
+    public static void makeArr() throws NumberFormatException, IOException {
+        br = new BufferedReader(new InputStreamReader(System.in));
+        int size = Integer.parseInt(br.readLine());
+        arr = new int[size];
+    }
 
-                }
+    public static void initializeArr() throws NumberFormatException, IOException {
+        for (int i = 0; i < arr.length; i++) {
+            arr[i] = Integer.parseInt(br.readLine());
+        }
+        // suffle();
+    }
+
+    public static void quickSort(int left, int right) {
+        int pLeft = left;
+        int pRight = right;
+        int pivot = (left + right) / 2;
+
+        do {
+            while (arr[pLeft] < arr[pivot])
+                pLeft++;
+            while (arr[pRight] > arr[pivot])
+                pRight--;
+
+            if (pLeft <= pRight) {
+                swap(pLeft++, pRight--);
             }
 
-        }
-        System.out.println(crocnt + alphacnt);
+        } while (pLeft <= pRight);
 
+        if (left < pLeft - 1)
+            quickSort(left, pLeft - 1);
+        if (right > pLeft)
+            quickSort(pLeft, right);
+    }
+
+    // public static void suffle() {
+    // for (int i = 0; i < 5; i++) {
+    // int value1 = (int) (Math.random() * arr.length);
+    // int value2 = (int) (Math.random() * arr.length);
+    // swap(value1, value2);
+    // }
+    // }
+
+    public static void swap(int pLeft, int pRight) {
+        int tmp = arr[pLeft];
+        arr[pLeft] = arr[pRight];
+        arr[pRight] = tmp;
+    }
+
+    public static void printArr() {
+        for (int value : arr) {
+            System.out.println(value);
+        }
     }
 }
