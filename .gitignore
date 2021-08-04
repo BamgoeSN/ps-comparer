@@ -1,0 +1,21 @@
+# Code files
+build/**/*.c
+build/**/*.cpp
+build/**/*.java
+build/**/*.go
+
+# Compiled binaries
+*.class
+*.jar
+*.exe
+
+# Files for testing
+wr.*
+cr.*
+
+# Result files
+output.txt
+
+# .vscode
+.vscode/*
+!.vscode/settings.json
