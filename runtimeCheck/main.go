@@ -18,8 +18,7 @@ var fp, _ = os.Create("output.txt")
 var outputWriter = bufio.NewWriter(fp)
 
 var (
-	timeOut   int = 8000 // In ms
-	testcases int = 100
+	testcases int = 10
 )
 
 func main() {
@@ -46,8 +45,6 @@ func main() {
 	// rand.Seed(1)
 	defer outputWriter.Flush()
 
-	wrong := make(map[string]int)
-
 	cnt := 0
 	jumps := runtimeProcs * 3
 
@@ -56,18 +53,15 @@ func main() {
 		// fmt.Printf("%.2f%% done out of %d\r", float64(testcase)/float64(testcases)*100, testcases)
 
 		ins := make([]string, jumps)
-		crStr := make([]string, jumps)
-		wrStr := make([]string, jumps)
-		wrongs := make([]bool, jumps)
+		dur := make([]time.Duration, jumps)
+		outs := make([]string, jumps)
 
 		var wg sync.WaitGroup
-		for i := range crStr {
+		for i := range ins {
 			ins[i] = CreateInput()
 			wg.Add(1)
 			go func(i int) {
 				defer wg.Done()
-				cr := exec.Command(`.\cr.exe`)
-				crStr[i] = Run(cr, ins[i])
 
 				var wr *exec.Cmd
 				if *isJava {
@@ -77,32 +71,13 @@ func main() {
 				} else {
 					wr = exec.Command(".\\wr.exe")
 				}
-				wrStr[i] = Run(wr, ins[i])
+				dur[i], outs[i] = Run(wr, ins[i])
 			}(i)
 		}
 		wg.Wait()
 
-		for i := range wrongs {
-			if crStr[i] != wrStr[i] {
-				wrongs[i] = true
-			}
-		}
-
-		for i, b := range wrongs {
-			if b {
-				in, crString, wrString := ins[i], crStr[i], wrStr[i]
-				_, e := wrong[in]
-				if !e {
-					wrong[in] = 1
-					cnt++
-					fmt.Fprintln(outputWriter, in)
-					fmt.Fprintln(outputWriter)
-					fmt.Fprintf(outputWriter, "정답: %s\n", crString)
-					fmt.Fprintf(outputWriter, "출력: %s\n", wrString)
-					fmt.Fprintln(outputWriter)
-					// fmt.Println("Found!", cnt, "                          ")
-				}
-			}
+		for i := range outs {
+			fmt.Fprintf(outputWriter, "\n\n시간: %v\n출력: %s\n\n" /*ins[i],*/, dur[i], outs[i])
 		}
 		outputWriter.Flush()
 

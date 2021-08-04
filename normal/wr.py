@@ -1,15 +1,43 @@
-def get(x, y):
-    k = [1]  # list of k, k_list[0]=1
-    cur = x+k[-1]  # cur:현재 위치(x+sum(k_list))
-    loop = 0
-    while(cur) < y:
-        loop += 1
-        a = k[-1]-1  # kn=k(n-1)-1 or k(n-1) or k(n-1)+1
-        b = k[-1]
-        c = k[-1]+1
-        for i in [c, b, a]:
-            if cur+((i+1)*i)/2 <= y:  # 1+2+3+...+n=n*(n+1)/2
-                k.append(i)
-                break
-        cur += k[-1]
-    return loop
+from collections import deque
+node, edge, start = [int(x) for x in input().split(' ')]
+
+mylist = {}
+for i in range(node):
+    mylist[i+1] = []
+for i in range(edge):
+    a, b = [int(x) for x in input().split()]
+    mylist[a].append(b)
+    mylist[b].append(a)
+for i in mylist:
+    mylist[i].sort()
+
+visited = [False for x in range(node + 1)]
+
+dfs = []
+
+
+def DFS(node):
+    visited[node] = True
+    dfs.append(node)
+    for i in mylist[node]:
+        if not visited[i]:
+            DFS(i)
+
+
+DFS(start)
+print(dfs)
+
+
+visited = [False for x in range(node + 1)]
+visited[start] = True
+q = deque([start])
+
+bfs = []
+while len(q):
+    cur = q.popleft()
+    bfs.append(cur)
+    for i in mylist[cur]:
+        if not visited[i]:
+            visited[i] = True
+            q.append(i)
+print(bfs)

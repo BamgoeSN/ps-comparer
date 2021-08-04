@@ -1,84 +1,65 @@
-#include <stdio.h>
+#include <iostream>
+using namespace std;
 
-void push(int *, int *, char *, int *, int *, int *, int *);        //arr,stack,sign,num,cur,top,scur
-void pop(int *, int *, int *, char *, int *, int *, int *, int *);  //arr,stack,save,sign,cur,top,scur,acur
+struct NODE {
+    int sp;
+    int lowernodenum[49];
+    int index;
+    bool disabled;
+    NODE() {
+        disabled = false;
+        for (index = 49; index > 0;) lowernodenum[--index] = -1;
+    }
+};
+
+void circuit(NODE*& node, const int& key, const int& ex, int& result) {
+    NODE& temp = node[key];
+
+    if (temp.disabled) return;
+    bool leafcheck = true;
+    for (temp.index = 0; temp.lowernodenum[temp.index] != -1;) {
+        if (temp.lowernodenum[temp.index] != -1) {
+            leafcheck = false;
+            break;
+        }
+    }
+    if (leafcheck) {
+        result += 1;
+        return;
+    }
+    for (temp.index = 0; temp.lowernodenum[temp.index] != -1;) circuit(node, temp.lowernodenum[temp.index++], ex, result);
+}
 
 int main() {
-    int times;          //몇 번 넣을건지
-    int arr[100001];    //original
-    int stack[100001];  //for stacking
-    int save[100001];   //for camparing
-    char sign[10000];   //for saving sign
-    int num = 1;
-    int cur = 0;   //for pointing number in arr
-    int top = -1;  //for pointing number in stack
-    int scur = 0;  //for pointing pos in sign
-    int acur = 0;  //for pointing pos in save
-    int cnt = 0;   //판별용
-    int k = 0;
+    ios::sync_with_stdio(false);
+    cin.tie(NULL);
+    cout.tie(NULL);
 
-    scanf("%d", &times);
+    int N, super, result = 0, ex;
+    cin >> N;
+    NODE* node = new NODE[N];
 
-    for (int i = 0; i < times; i++)
-        scanf("%d", &arr[i]);
+    for (int i = 0; i < N; i++) {
+        cin >> super;
+        node[i].sp = super;
+        if (super == -1) continue;
+        node[super].lowernodenum[node[super].index++] = i;
+    }
 
-    while (cur < times) {
-        if (num > arr[cur])
+    for (int i = 0; i < N; i++) node[i].index = 0;
+
+    cin >> ex;
+    node[ex].disabled = true;
+    for (int i = 0; i < N; i++) {
+        if (node[node[ex].sp].lowernodenum[i] == ex) {
+            node[node[ex].sp].lowernodenum[i] = -1;
             break;
-        push(arr, stack, sign, &num, &cur, &top, &scur);
-        pop(arr, stack, save, sign, &cur, &top, &scur, &acur);
-    }
-
-    for (int i = 0; i < times; i++) {
-        if (arr[i] != save[i])
-            cnt++;
-    }
-
-    if (cnt != 0)
-        printf("NO\n");
-
-    else
-        while (sign[k] == '+' || sign[k] == '-') {
-            printf("%c\n", sign[k]);
-            k++;
         }
-}
-
-void push(int *carr, int *cstack, char *csign, int *cnum, int *ccur, int *ctop, int *cscur) {
-    int pnum = *cnum;
-    int pcur = *ccur;
-    int ptop = *ctop;
-    int pscur = *cscur;
-
-    while (pnum <= carr[pcur]) {
-        cstack[++ptop] = pnum++;
-        csign[pscur++] = '+';
     }
+    circuit(node, 0, ex, result);
 
-    *cnum = pnum;
-    *ccur = pcur;
-    *ctop = ptop;
-    *cscur = pscur;
-}
+    cout << result;
 
-void pop(int *carr, int *cstack, int *csave, char *csign, int *ccur, int *ctop, int *cscur, int *cacur) {
-    int pcur = *ccur;
-    int ptop = *ctop;
-    int pscur = *cscur;
-    int pacur = *cacur;
-
-    while (cstack[ptop] >= carr[pcur]) {
-        csave[pacur++] = cstack[ptop];
-        csign[pscur++] = '-';
-        if (carr[pcur] == cstack[ptop])
-            pcur++;
-        ptop--;
-        if (ptop == -1)
-            break;
-    }
-
-    *ccur = pcur;
-    *ctop = ptop;
-    *cscur = pscur;
-    *cacur = pacur;
+    delete[] node;
+    return 0;
 }

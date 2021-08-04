@@ -7,22 +7,25 @@ import (
 )
 
 var (
-	nmax, nmin int = 90000, 90000
+	nmin, nmax int = 1, 5
+	mmin, mmax int = 1, 10
 )
 
 func CreateInput() string {
 	ans := new(strings.Builder)
 
 	n := rand.Intn(nmax-nmin+1) + nmin
-	fmt.Fprintln(ans, n)
+	m := rand.Intn(mmax-mmin+1) + mmin
+	v := rand.Intn(n) + 1
+	fmt.Fprintln(ans, n, m, v)
 
-	arr := make([]int, n)
-	for i := range arr {
-		arr[i] = i + 1
-	}
-	// rand.Shuffle(len(arr), func(i, j int) { arr[i], arr[j] = arr[j], arr[i] })
-	for _, v := range arr {
-		fmt.Fprintln(ans, v)
+	for i := 0; i < m; i++ {
+		s := rand.Intn(n)
+		e := rand.Intn(n)
+		// if e >= s {
+		// 	e++
+		// }
+		fmt.Fprintln(ans, s+1, e+1)
 	}
 
 	return TrimSpaces(ans.String())
