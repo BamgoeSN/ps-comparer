@@ -4,9 +4,37 @@ import (
 	"bufio"
 	"fmt"
 	"os"
-	"sort"
 	"strconv"
 )
+
+//-------
+// Stack
+//-------
+
+type Stack []int64
+
+func NewStack(cap int) *Stack {
+	s := make(Stack, 0, cap)
+	return &s
+}
+
+func (s *Stack) Push(n int64) {
+	*s = append(*s, n)
+}
+
+func (s *Stack) Pop() int64 {
+	temp := (*s)[len(*s)-1]
+	*s = (*s)[:len(*s)-1]
+	return temp
+}
+
+func (s *Stack) Get() int64 {
+	return (*s)[len(*s)-1]
+}
+
+func (s *Stack) Len() int {
+	return len(*s)
+}
 
 //------
 // Main
@@ -15,121 +43,37 @@ import (
 func main() {
 	sc.Split(bufio.ScanWords)
 	defer wr.Flush()
-	N, M, V := nextInt(), nextInt(), nextInt()-1
-	graph := make([][]int, N)
-	for i := 0; i < M; i++ {
-		s, e := nextInt()-1, nextInt()-1
-		graph[s] = append(graph[s], e)
-		graph[e] = append(graph[e], s)
-	}
-	for k := range graph {
-		sort.Slice(graph[k], func(i, j int) bool { return graph[k][i] < graph[k][j] })
-	}
+	N := nextInt()
+	s := NewStack(2)
 
-	// DFS
-	visit := make([]bool, N)
-	visit[V] = true
-	list := []int{V}
-	DFS(graph, V, visit, &list)
-	for _, v := range list {
-		fmt.Fprintf(wr, "%d ", v+1)
-	}
-	fmt.Fprintln(wr)
-
-	// BFS
-	q := NewQueue(1)
-	q.Push(V)
-	for i := range visit {
-		visit[i] = false
-	}
-	visit[V] = true
-	fmt.Fprintf(wr, "%d ", V+1)
-	for q.Len() != 0 {
-		v := q.Pop()
-		for _, e := range graph[v] {
-			if visit[e] {
-				continue
+	for i := 0; i < N; i++ {
+		sc.Scan()
+		q := sc.Text()
+		switch q {
+		case "push":
+			s.Push(nextInt64())
+		case "pop":
+			if s.Len() == 0 {
+				fmt.Fprint(wr, "-1\n")
+			} else {
+				fmt.Fprintf(wr, "%d\n", s.Pop())
 			}
-			visit[e] = true
-			fmt.Fprintf(wr, "%d ", e+1)
-			q.Push(e)
+		case "size":
+			fmt.Fprintf(wr, "%d\n", s.Len())
+		case "empty":
+			if s.Len() == 0 {
+				fmt.Fprint(wr, "1\n")
+			} else {
+				fmt.Fprint(wr, "0\n")
+			}
+		case "top":
+			if s.Len() == 0 {
+				fmt.Fprint(wr, "-1\n")
+			} else {
+				fmt.Fprintf(wr, "%d\n", s.Get())
+			}
 		}
 	}
-}
-
-func DFS(graph [][]int, curr int, visit []bool, list *[]int) {
-	for _, e := range graph[curr] {
-		if visit[e] {
-			continue
-		}
-		visit[e] = true
-		*list = append(*list, e)
-		DFS(graph, e, visit, list)
-	}
-}
-
-//-------
-// Queue
-//-------
-
-type Queue struct {
-	ints        []int
-	front, rear int
-	cap         int
-}
-
-func NewQueue(cap int) *Queue {
-	if cap <= 1 {
-		cap = 2
-	}
-	q := new(Queue)
-	q.ints = make([]int, cap)
-	q.front, q.rear = 0, 0
-	q.cap = cap
-	return q
-}
-
-func (q *Queue) extend(newCap int) {
-	newLen := q.Len()
-	newArr := make([]int, newCap)
-	if q.rear >= q.front {
-		copy(newArr, q.ints[q.front:q.rear])
-	} else {
-		lenFront := len(q.ints) - q.front
-		copy(newArr, q.ints[q.front:])
-		copy(newArr[lenFront:], q.ints[:q.rear])
-	}
-	q.ints = newArr
-	q.cap = newCap
-	q.front, q.rear = 0, newLen
-}
-
-func (q *Queue) Push(n int) {
-	if q.Len() >= q.cap-1 {
-		q.extend(q.cap*3/2 + 1)
-	}
-	q.ints[q.rear] = n
-	q.rear++
-	if q.rear >= q.cap {
-		q.rear -= q.cap
-	}
-}
-
-func (q *Queue) Pop() int {
-	temp := q.ints[q.front]
-	q.front++
-	if q.front >= q.cap {
-		q.front -= q.cap
-	}
-	return temp
-}
-
-func (q *Queue) Len() int {
-	length := q.rear - q.front + q.cap
-	if length >= q.cap {
-		length -= q.cap
-	}
-	return length
 }
 
 //---------
@@ -139,9 +83,16 @@ func (q *Queue) Len() int {
 var sc = bufio.NewScanner(os.Stdin)
 var wr = bufio.NewWriter(os.Stdout)
 
-func nextInt() int {
+func nextInt() (res int) {
 	sc.Scan()
 	text := sc.Text()
 	v, _ := strconv.Atoi(text)
+	return v
+}
+
+func nextInt64() (res int64) {
+	sc.Scan()
+	text := sc.Text()
+	v, _ := strconv.ParseInt(text, 10, 64)
 	return v
 }

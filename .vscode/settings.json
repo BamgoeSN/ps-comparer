@@ -7,4 +7,8 @@
         "--exclude=don't use ALL_CAPS in Go names; use CamelCase",
         "--exclude=(func|const|struct field|) \\w+ should be \\w+"
     ],
+    "files.associations": {
+        "functional": "cpp",
+        "iostream": "cpp"
+    },
 }

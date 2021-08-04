@@ -1,65 +1,62 @@
-#include <iostream>
-using namespace std;
+#include <stdio.h>
+#include <stdlib.h>
 
-struct NODE {
-    int sp;
-    int lowernodenum[49];
-    int index;
-    bool disabled;
-    NODE() {
-        disabled = false;
-        for (index = 49; index > 0;) lowernodenum[--index] = -1;
+typedef struct list {
+    int num;
+    struct link* link;
+} List;
+
+List* insert(List* head, int no) {
+    List* node = (List*)malloc(sizeof(List*));
+    node->num = no;
+
+    if (head == NULL) {
+        head = node;
+        node->link = head;
+    } else {
+        node->link = head->link;
+        head->link = node;
+        head = node;
     }
-};
 
-void circuit(NODE*& node, const int& key, const int& ex, int& result) {
-    NODE& temp = node[key];
+    return head;
+}
 
-    if (temp.disabled) return;
-    bool leafcheck = true;
-    for (temp.index = 0; temp.lowernodenum[temp.index] != -1;) {
-        if (temp.lowernodenum[temp.index] != -1) {
-            leafcheck = false;
+List* print(List* head, int order) {
+    List *point, *old;
+    point = head->link;
+    old = head;
+    int cnt = 1;
+
+    while (1) {
+        if (cnt == order) {
+            old->link = point->link;
+            printf("%d ", point->num);
+            free(point);
             break;
         }
+        old = point;
+        point = point->link;
+        cnt++;
     }
-    if (leafcheck) {
-        result += 1;
-        return;
-    }
-    for (temp.index = 0; temp.lowernodenum[temp.index] != -1;) circuit(node, temp.lowernodenum[temp.index++], ex, result);
+
+    return head;
 }
 
 int main() {
-    ios::sync_with_stdio(false);
-    cin.tie(NULL);
-    cout.tie(NULL);
+    int times;  //몇 명 넣을것인지
+    int order;  //몇 번째를 없앨것인지
+    int lim = 0;
 
-    int N, super, result = 0, ex;
-    cin >> N;
-    NODE* node = new NODE[N];
+    scanf("%d %d", &times, &order);
 
-    for (int i = 0; i < N; i++) {
-        cin >> super;
-        node[i].sp = super;
-        if (super == -1) continue;
-        node[super].lowernodenum[node[super].index++] = i;
+    List* head = NULL;
+
+    for (int i = 1; i <= times; i++)
+        head = insert(head, i);
+
+    while (lim != times) {
+        head = print(head, order);
+        lim++;
     }
-
-    for (int i = 0; i < N; i++) node[i].index = 0;
-
-    cin >> ex;
-    node[ex].disabled = true;
-    for (int i = 0; i < N; i++) {
-        if (node[node[ex].sp].lowernodenum[i] == ex) {
-            node[node[ex].sp].lowernodenum[i] = -1;
-            break;
-        }
-    }
-    circuit(node, 0, ex, result);
-
-    cout << result;
-
-    delete[] node;
-    return 0;
 }
