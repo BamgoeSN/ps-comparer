@@ -1,9 +1,10 @@
-# CC = g++
-# CFLAGS = -O2 -Wall -lm -static -std=gnu++17
-# SOURCES = $(wildcard *.cpp)
-CC = gcc
-CFLAGS = -O2 -Wall -lm -static -std=gnu11
-SOURCES = $(wildcard *.c)
+CC = g++
+CFLAGS = -O2 -Wall -lm -static -std=gnu++17
+SOURCES = $(wildcard *.cpp)
+# CC = gcc
+# CFLAGS = -O2 -Wall -lm -static -std=gnu11
+# SOURCES = $(wildcard *.c)
+
 TARGET = wr.exe
 
 all: $(TARGET)
