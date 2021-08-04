@@ -8,6 +8,7 @@ MANIFEST = manifest.txt
 TARGET = wr.jar
 
 all: $(TARGET)
+	rm *.class
 
 $(TARGET): $(CLASSES)
 	$(JAR) -cvmf $(MANIFEST) $@ $^
