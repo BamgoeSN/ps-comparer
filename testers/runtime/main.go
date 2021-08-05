@@ -77,7 +77,7 @@ func main() {
 		wg.Wait()
 
 		for i := range outs {
-			fmt.Fprintf(outputWriter, "\n\n시간: %v\n출력: %s\n\n" /*ins[i],*/, dur[i], outs[i])
+			fmt.Fprintf(outputWriter, "시간: %v\n", dur[i])
 		}
 		outputWriter.Flush()
 

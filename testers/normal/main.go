@@ -18,7 +18,7 @@ var fp, _ = os.Create("output.txt")
 var outputWriter = bufio.NewWriter(fp)
 
 var (
-	timeOut   int = 600 // In ms
+	timeOut   int = 2000 // In ms
 	testcases int = 100
 )
 
@@ -38,7 +38,7 @@ func main() {
 	testcases = *testCaseFlag
 
 	// runtimeProcs := runtime.NumCPU()
-	runtimeProcs := 1
+	runtimeProcs := 3
 	fmt.Printf("Using %d processors\n", runtimeProcs)
 	runtime.GOMAXPROCS(runtimeProcs)
 
