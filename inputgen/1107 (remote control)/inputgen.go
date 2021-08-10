@@ -6,24 +6,32 @@ import (
 	"strings"
 )
 
-var ()
+var (
+	nmin, nmax int = 0, 100
+)
 
 func CreateInput() string {
 	ans := new(strings.Builder)
 
-	N := 1000000
+	N := rand.Intn(nmax-nmin+1) + nmin
 	fmt.Fprintln(ans, N)
-	for i := 0; i < N; i++ {
-		fmt.Fprintf(ans, "%d ", rand.Intn(100000)+1)
-	}
-	fmt.Fprintln(ans)
 
-	M := 100000
-	fmt.Fprintln(ans, M)
-	for i := 0; i < M; i++ {
-		e := rand.Intn(N-2) + 2
-		s := rand.Intn(e-1) + 1
-		fmt.Fprintln(ans, s, e)
+	cnt := 0
+	isBroken := make([]bool, 10)
+	rate := rand.Float64()
+	for i := range isBroken {
+		pick := rand.Float64()
+		if pick < rate {
+			isBroken[i] = true
+			cnt++
+		}
+	}
+
+	fmt.Fprintln(ans, cnt)
+	for i, b := range isBroken {
+		if b {
+			fmt.Fprintf(ans, "%d ", i)
+		}
 	}
 
 	return TrimSpaces(ans.String())

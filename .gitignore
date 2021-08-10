@@ -8,6 +8,7 @@ build/**/*.go
 *.class
 *.jar
 *.exe
+!inputgen/*/*.exe
 
 # Files for testing
 wr.*
