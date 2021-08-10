@@ -6,28 +6,16 @@ import (
 	"strings"
 )
 
-var commands = []string{"push", "pop", "size", "empty", "top"}
-
 var (
-	nmin, nmax int   = 1, 5
-	vmin, vmax int64 = 1, 10
+	nmax, nmin int = 100, 1
 )
 
 func CreateInput() string {
 	ans := new(strings.Builder)
 
-	N := rand.Intn(nmax-nmin+1) + nmin
-	fmt.Fprintln(ans, N)
-
-	for i := 0; i < N; i++ {
-		q := commands[rand.Intn(len(commands))]
-		switch q {
-		case "push":
-			fmt.Fprintln(ans, q, rand.Int63n(vmax-vmin+1)+vmin)
-		default:
-			fmt.Fprintln(ans, q)
-		}
-	}
+	M := rand.Intn(nmax-nmin+1) + nmin
+	N := rand.Intn(M-nmin+1) + nmin
+	fmt.Fprintf(ans, "%d\n%d\n", M, N)
 
 	return TrimSpaces(ans.String())
 }

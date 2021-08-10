@@ -19,7 +19,7 @@ var writer = bufio.NewWriter(fp)
 
 var (
 	timeOut   int = 4000 // In ms
-	testcases int = 100
+	testcases int = 10
 )
 
 func main() {
@@ -46,8 +46,6 @@ func main() {
 	defer writer.Flush()
 	start := time.Now()
 
-	wrong := make(map[string]int)
-
 	cnt := 0
 	jumps := runtimeProcs * 3
 
@@ -57,7 +55,6 @@ func main() {
 
 		ins := make([]string, jumps)
 		outs := make([]string, jumps)
-		errors := make([]bool, jumps)
 
 		var wg sync.WaitGroup
 		for i := range outs {
@@ -73,27 +70,17 @@ func main() {
 				} else {
 					wr = exec.Command(".\\wr.exe")
 				}
-				outs[i], errors[i] = Run(wr, ins[i])
+				outs[i], _ = Run(wr, ins[i])
 			}(i)
 		}
 		wg.Wait()
 
-		for i, b := range errors {
-			if !b {
-				in, out := ins[i], outs[i]
-				_, e := wrong[in]
-				if !e {
-					wrong[in] = 1
-					cnt++
-					fmt.Fprintln(writer, in)
-					fmt.Fprintln(writer)
-					fmt.Fprintf(writer, "에러: %s\n", out)
-					fmt.Fprintln(writer)
-					// fmt.Println("Found!", cnt, "                          ")
-				}
-			}
+		for i := range ins {
+			fmt.Fprintln(writer, ins[i])
+			fmt.Fprintln(writer)
+			fmt.Fprintln(writer, outs[i])
+			fmt.Fprint(writer, "\n\n")
 		}
-		writer.Flush()
 
 		err := bar.Add(jumps)
 		if err != nil {
