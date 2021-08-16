@@ -7,28 +7,36 @@ import (
 )
 
 var (
-	nmax, nmin int = 8, 1
+	nmin, nmax int = 1, 10
+	mmin, mmax int = 10, 10
 )
 
 func CreateInput() string {
 	ans := new(strings.Builder)
 
-	R, C := rand.Intn(nmax-nmin+1)+nmin, rand.Intn(nmax-nmin+1)+nmin
-	fmt.Fprintln(ans, R, C)
+	N := rand.Intn(nmax-nmin+1) + nmin
+	M := rand.Intn(mmax-mmin+1) + mmin
+	fmt.Fprintln(ans, N, M)
 
-	rate := rand.Float64()
-	arr := make([][]byte, R)
-	for r := range arr {
-		arr[r] = make([]byte, C)
-		for c := range arr[r] {
-			pick := rand.Float64()
-			if pick < rate {
-				arr[r][c] = '1'
-			} else {
-				arr[r][c] = '0'
-			}
+	for i := 0; i < M; i++ {
+		q := rand.Intn(4) + 1
+		switch q {
+		case 1:
+			l := rand.Intn(N) + 1
+			r := rand.Intn(N-l+1) + l
+			fmt.Fprintln(ans, q, l, r)
+		case 2:
+			l := rand.Intn(N) + 1
+			r := rand.Intn(N-l+1) + l
+			x := rand.Intn(2*N+1) - N
+			fmt.Fprintln(ans, q, l, r, x)
+		case 3:
+			i := rand.Intn(N) + 1
+			fmt.Fprintln(ans, q, i)
+		case 4:
+			x := rand.Intn(N) + 1
+			fmt.Fprintln(ans, q, x)
 		}
-		fmt.Fprintln(ans, string(arr[r]))
 	}
 
 	return TrimSpaces(ans.String())

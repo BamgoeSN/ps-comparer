@@ -3,6 +3,7 @@ build/**/*.c
 build/**/*.cpp
 build/**/*.java
 build/**/*.go
+build/**/*.rs
 
 # Compiled binaries
 *.class
