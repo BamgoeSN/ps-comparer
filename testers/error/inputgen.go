@@ -9,15 +9,19 @@ import (
 func CreateInput() string {
 	ans := new(strings.Builder)
 
-	N := 15
-	fmt.Fprintln(ans, N)
-	for i := 0; i < 15; i++ {
-		fmt.Fprintln(ans, rand.Intn(10000)+1)
+	N := 10
+	K := RandRange(1, N)
+	fmt.Fprintln(ans, N, K)
+
+	for i := 0; i < N; i++ {
+		fmt.Fprintln(ans, RandRange(0, 30))
 	}
-	K := rand.Intn(100) + 1
-	fmt.Fprintln(ans, K)
 
 	return TrimSpaces(ans.String())
+}
+
+func RandRange(l, r int) int {
+	return rand.Intn(r-l+1) + l
 }
 
 func TrimSpaces(str string) string {
