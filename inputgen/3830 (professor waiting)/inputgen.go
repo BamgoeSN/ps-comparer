@@ -8,8 +8,8 @@ import (
 )
 
 var (
-	nmin, nmax int   = 3, 6
-	wmin, wmax int64 = 0, 10
+	nmin, nmax int   = 1, 10
+	wmin, wmax int64 = -5, 5
 )
 
 func CreateInput() string {
