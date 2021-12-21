@@ -6,6 +6,7 @@ SOURCES = $(wildcard *.java)
 CLASSES = $(SOURCES:.java=.class)
 MANIFEST = manifest.txt
 TARGET = wr.jar
+ENCODING = -encoding utf-8 
 
 all: $(TARGET)
 	rm *.class
@@ -14,7 +15,7 @@ $(TARGET): $(CLASSES)
 	$(JAR) -cvmf $(MANIFEST) $@ $^
 
 %.class: %.java
-	$(JAVAC) $<
+	$(JAVAC) $(ENCODING) $<
 
 clear:
 	rm *.class
