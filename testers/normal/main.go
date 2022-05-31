@@ -66,18 +66,31 @@ func main() {
 			wg.Add(1)
 			go func(i int) {
 				defer wg.Done()
-				cr := exec.Command(`.\cr.exe`)
-				crStr[i] = Run(cr, ins[i])
-
-				var wr *exec.Cmd
-				if *isJava {
-					wr = exec.Command(`java`, `-jar`, `.\wr.jar`)
-				} else if *isPython {
-					wr = exec.Command(`pypy`, `.\wr.py`)
+				crPath := "./cr.exe"
+				crOut, crErr := getOutput(crPath, ins[i])
+				if crErr == "" {
+					crStr[i] = crOut
 				} else {
-					wr = exec.Command(".\\wr.exe")
+					crStr[i] = crErr
 				}
-				wrStr[i] = Run(wr, ins[i])
+
+				if *isJava || *isPython {
+					var wr *exec.Cmd
+					if *isJava {
+						wr = exec.Command(`java`, `-jar`, `./wr.jar`)
+					} else {
+						wr = exec.Command(`pypy`, `./wr.py`)
+					}
+					wrStr[i] = Run(wr, ins[i])
+				} else {
+					wrPath := "./wr.exe"
+					wrOut, wrErr := getOutput(wrPath, ins[i])
+					if wrErr == "" {
+						wrStr[i] = wrOut
+					} else {
+						wrStr[i] = wrErr
+					}
+				}
 			}(i)
 		}
 		wg.Wait()
