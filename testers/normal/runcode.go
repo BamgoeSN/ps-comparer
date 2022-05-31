@@ -36,6 +36,7 @@ func getOutput(path string, input string) (stdout string, stderr string) {
 
 	go func() {
 		stdout, stderr = runProc(path, stdin)
+		stdout = TrimSpaces(stdout)
 		done <- true
 	}()
 
