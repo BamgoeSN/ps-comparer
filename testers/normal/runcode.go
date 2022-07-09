@@ -2,6 +2,7 @@ package main
 
 import (
 	"bytes"
+	"context"
 	"crypto/sha256"
 	"fmt"
 	"io/ioutil"
@@ -14,6 +15,56 @@ import (
 )
 
 // New
+func Run(input string, timeLimit time.Duration, process string, args ...string) (outstr string, errstr string) {
+	ctx, cancel := context.WithTimeout(context.Background(), timeLimit)
+	defer cancel()
+	cmd := exec.CommandContext(ctx, process, args...)
+
+	infname := genFile(input)
+	f, err := os.Open(infname)
+	if err != nil {
+		log.Fatal(err, "Error while opening input file")
+	}
+	defer func() {
+		f.Close()
+		os.Remove(infname)
+	}()
+	cmd.Stdin = f
+
+	var stdout bytes.Buffer
+	var stderr bytes.Buffer
+	cmd.Stdout = &stdout
+	cmd.Stderr = &stderr
+
+	err = cmd.Run()
+	if err != nil {
+		if err.Error() == "signal: killed" {
+			return "", "Timeout!"
+		}
+		log.Fatal(err, "Error while running a process", process, args)
+	}
+
+	return stdout.String(), stderr.String()
+}
+
+func genFile(input string) string {
+	l := rand.Intn(10) + 10
+	h := sha256.New()
+	for i := 0; i < l; i++ {
+		v := rand.Int63()
+		h.Write([]byte(fmt.Sprintf("%d", v)))
+	}
+	fname := fmt.Sprintf("input_%x", h.Sum(nil))
+	stdin, err := os.Create(fname)
+	defer stdin.Close()
+	if err != nil {
+		log.Fatal(err, "Error while creating a file for an input")
+	}
+	stdin.WriteString(input)
+	return fname
+}
+
+// Old2
 
 func getOutput(path string, input string) (stdout string, stderr string) {
 	l := rand.Intn(10) + 10
@@ -76,7 +127,7 @@ func runProc(path string, input *os.File) (stdout string, stderr string) {
 
 // Old
 
-func Run(p *exec.Cmd, in string) string {
+func RunOld(p *exec.Cmd, in string) string {
 	p.Stdin = strings.NewReader(in)
 
 	// Get pipe to stdout

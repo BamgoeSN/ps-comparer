@@ -6,7 +6,6 @@ import (
 	"fmt"
 	"math/rand"
 	"os"
-	"os/exec"
 	"runtime"
 	"sync"
 	"time"
@@ -18,7 +17,7 @@ var fp, _ = os.Create("output.txt")
 var outputWriter = bufio.NewWriter(fp)
 
 var (
-	timeOut   int = 2000 // In ms
+	timeOut       = 4000 * time.Millisecond
 	testcases int = 100
 )
 
@@ -66,25 +65,29 @@ func main() {
 			wg.Add(1)
 			go func(i int) {
 				defer wg.Done()
-				crPath := "./cr.exe"
-				crOut, crErr := getOutput(crPath, ins[i])
+				crOut, crErr := Run(ins[i], timeOut, "./cr.exe")
 				if crErr == "" {
 					crStr[i] = crOut
 				} else {
 					crStr[i] = crErr
 				}
 
-				if *isJava || *isPython {
-					var wr *exec.Cmd
-					if *isJava {
-						wr = exec.Command(`java`, `-jar`, `./wr.jar`)
+				if *isJava {
+					wrOut, wrErr := Run(ins[i], timeOut*2+time.Second, "java", "-jar", "./wr.jar")
+					if wrErr == "" {
+						wrStr[i] = wrOut
 					} else {
-						wr = exec.Command(`pypy`, `./wr.py`)
+						wrStr[i] = wrErr
 					}
-					wrStr[i] = Run(wr, ins[i])
+				} else if *isPython {
+					wrOut, wrErr := Run(ins[i], timeOut*3+time.Second*2, "pypy", "./wr.py")
+					if wrErr == "" {
+						wrStr[i] = wrOut
+					} else {
+						wrStr[i] = wrErr
+					}
 				} else {
-					wrPath := "./wr.exe"
-					wrOut, wrErr := getOutput(wrPath, ins[i])
+					wrOut, wrErr := Run(ins[i], timeOut, "./wr.exe")
 					if wrErr == "" {
 						wrStr[i] = wrOut
 					} else {

@@ -7,21 +7,12 @@ import (
 )
 
 var (
-	vmin, vmax int = -100, 100
-	nmin, nmax int = 1, 100
+	nmin, nmax int = 2, 10000
 )
 
 func CreateInput() string {
 	ans := new(strings.Builder)
-
-	n := RandRange(nmin, nmax)
-	fmt.Fprintln(ans, n)
-
-	for i := 0; i < n; i++ {
-		v := RandRange(vmin, vmax)
-		fmt.Fprintf(ans, "%d ", v)
-	}
-
+	fmt.Fprintln(ans, RandRange(nmin, nmax))
 	return TrimSpaces(ans.String())
 }
 
