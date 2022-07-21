@@ -26,6 +26,7 @@ func main() {
 	testCaseFlag := flag.Int("tc", testcases, fmt.Sprintf("Number of testcases; default is %d", testcases))
 	isJava := flag.Bool("java", false, "Checks if the wrong case is in .jar file")
 	isPython := flag.Bool("pypy", false, "Checks if the wrong case is in .py file")
+	isJs := flag.Bool("js", false, "Checks if the wrong case is in .js file")
 	flag.Parse()
 
 	if *inputDebugNum > 0 {
@@ -86,6 +87,13 @@ func main() {
 					} else {
 						wrStr[i] = wrErr
 					}
+				} else if *isJs {
+					wrOut, wrErr := Run(ins[i], timeOut*3+time.Second*2, "node", "./wr.js")
+					if wrErr == "" {
+						wrStr[i] = wrOut
+					} else {
+						wrStr[i] = wrErr
+					}
 				} else {
 					wrOut, wrErr := Run(ins[i], timeOut, "./wr.exe")
 					if wrErr == "" {
@@ -99,7 +107,7 @@ func main() {
 		wg.Wait()
 
 		for i := range wrongs {
-			if crStr[i] != wrStr[i] {
+			if TrimSpaces(crStr[i]) != TrimSpaces(wrStr[i]) {
 				wrongs[i] = true
 			}
 		}
