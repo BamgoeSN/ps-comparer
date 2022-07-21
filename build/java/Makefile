@@ -1,25 +1,32 @@
-JAVA = java
-RUNFLG = -jar
-JAVAC = javac
-JAR = jar
-SOURCES = $(wildcard *.java)
-CLASSES = $(SOURCES:.java=.class)
-MANIFEST = manifest.txt
 TARGET = wr.jar
-ENCODING = -encoding utf-8 
 
-all: $(TARGET)
+all:
+	javac -encoding utf-8 Main.java
+	jar -cvmf manifest.txt wr.jar *.class
 	rm *.class
 
-$(TARGET): $(CLASSES)
-	$(JAR) -cvmf $(MANIFEST) $@ $^
+# JAVA = java
+# RUNFLG = -jar
+# JAVAC = javac
+# JAR = jar
+# SOURCES = $(wildcard *.java)
+# CLASSES = $(SOURCES:.java=.class)
+# MANIFEST = manifest.txt
+# TARGET = wr.jar
+# ENCODING = -encoding utf-8 
 
-%.class: %.java
-	$(JAVAC) $(ENCODING) $<
+# all: $(TARGET)
+# 	rm *.class
 
-clear:
-	rm *.class
-	rm *.jar
+# $(TARGET): $(CLASSES)
+# 	$(JAR) -cvmf $(MANIFEST) $@ $^
 
-run: $(TARGET)
-	$(JAVA) $(RUNFLG) $^
+# %.class: %.java
+# 	$(JAVAC) $(ENCODING) $<
+
+# clear:
+# 	rm *.class
+# 	rm *.jar
+
+# run: $(TARGET)
+# 	$(JAVA) $(RUNFLG) $^
