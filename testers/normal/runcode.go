@@ -41,7 +41,7 @@ func Run(input string, timeLimit time.Duration, process string, args ...string) 
 		if err.Error() == "signal: killed" {
 			return "", "Timeout!"
 		}
-		log.Fatal(err, "Error while running a process", process, args)
+		return "", strings.Join([]string{stderr.String(), err.Error()}, "; ")
 	}
 
 	return stdout.String(), stderr.String()
